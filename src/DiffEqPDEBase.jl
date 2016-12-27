@@ -6,6 +6,10 @@ using DiffEqBase
 
 using RecipesBase, VectorizedRoutines.Matlab, ChunkedArrays
 
+abstract AbstractPoissonProblem <: DEProblem
+abstract AbstractHeatProblem <: DEProblem
+
+abstract AbstractFEMSolution <: DESolution
 
 import Base: size, length, start, next, done, eltype
 
@@ -21,7 +25,7 @@ include("mesh_tools/fem_boundary.jl")
 # Types
 export HeatProblem, PoissonProblem, FEMSolution, FEMmesh, SimpleMesh, FDMMesh
 
-export animate
+export AbstractPoissonProblem, AbstractHeatProblem, AbstractFEMSolution
 
 #FEM Functions
 export  assemblematrix, findboundary, setboundary, findbdtype, getL2error, quadpts, getH1error,
