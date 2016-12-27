@@ -12,7 +12,7 @@
   else #use timeseries
     out = Any[]
     for i = 1:sol.prob.numvars
-      push!(out,sol.timeseries[sol.tslocation][i])
+      push!(out,sol[sol.tslocation,:,i])
     end
   end
   seriestype --> :surface

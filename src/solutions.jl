@@ -33,15 +33,15 @@ type FEMSolution <: AbstractFEMSolution
   function FEMSolution(fem_mesh::FEMmesh,u,u_analytic,Du,t,prob;save_timeseries=true)
     errors = Dict(:L2=>getL2error(fem_mesh,prob.analytic,u[end]),:H1=>getH1error(fem_mesh,Du,u[end]),
                   :l∞=> maximum(abs.(u[end]-u_analytic)), :l2=> norm(u[end]-u_analytic,2))
-    return(new(fem_mesh,u,true,u_analytic,errors,false,t,prob,true,0))
+    new(fem_mesh,u,true,u_analytic,errors,false,t,prob,true,0)
   end
   function FEMSolution(fem_mesh,u,u_analytic,Du,prob)
     FEMSolution(fem_mesh::FEMmesh,u,u_analytic,Du,[],prob,save_timeseries=false)
   end
   function FEMSolution(fem_mesh::FEMmesh,u::AbstractArray,prob)
-    return(FEMSolution(fem_mesh,u,[],prob,save_timeseries=false))
+    FEMSolution(fem_mesh,u,[],prob,save_timeseries=false)
   end
   function FEMSolution(fem_mesh::FEMmesh,u::AbstractArray,t,prob;save_timeseries=true)
-    return(new(fem_mesh,u,false,nothing,Dict{String,Float64}(),false,t,prob,save_timeseries,0))
+    new(fem_mesh,u,false,nothing,Dict{String,Float64}(),false,t,prob,save_timeseries,0)
   end
 end
