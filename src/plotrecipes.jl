@@ -17,7 +17,7 @@
   end
   seriestype --> :surface
   layout --> length(out)
-  sol.fem_mesh.node[:,1], sol.fem_mesh.node[:,2], out
+  sol.prob.mesh.node[:,1], sol.prob.mesh.node[:,2], out
 end
 
 

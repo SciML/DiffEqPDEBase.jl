@@ -1,47 +1,27 @@
-"""
-`FEMSolution`
-
-Holds the data for the solution to a finite element problem.
-
-### Fields
-
-* `fem_mesh::FEMmesh`: The finite element mesh the problem was solved on.
-* `u::Array{Float64}`: The solution (at the final timepoint)
-* `trueknown::Bool`: Boolean flag for if the true solution is given.
-* `u_analytic::AbstractArrayOrVoid`: The true solution at the final timepoint.
-* `errors`: A dictionary of the error calculations.
-* `appxtrue::Bool`: Boolean flag for if u_analytic was an approximation.
-* `timeseries`::AbstractArrayOrVoid`: u over time. Only saved if `save_timeseries=true`
-  is specified in the solver.
-* `t::AbstractArrayOrVoid`: All the t's in the solution. Only saved if `save_timeseries=true`
-  is specified in the solver.
-* `prob::DEProblem`: Holds the problem object used to define the problem.
-* `save_timeseries::Bool`: True if solver saved the extra timepoints.
-
-"""
-type FEMSolution <: AbstractFEMSolution
-  fem_mesh::FEMmesh
-  u#::Array{Number}
-  trueknown::Bool
-  u_analytic#::AbstractArrayOrVoid
-  errors#::Dict{String,Float64}
-  appxtrue::Bool
-  t#::AbstractArrayOrVoid
-  prob::DEProblem
-  save_timeseries::Bool
+type FEMSolution{uType,tType,UTrueType,uElType,ProbType} <: AbstractFEMSolution
+  u::uType
+  u_analytic::UTrueType
+  errors::Dict{Symbol,uElType}
+  t::tType
+  prob::ProbType
   tslocation::Int # Used in the iterator for animation
-  function FEMSolution(fem_mesh::FEMmesh,u,u_analytic,Du,t,prob;save_timeseries=true)
-    errors = Dict(:L2=>getL2error(fem_mesh,prob.analytic,u[end]),:H1=>getH1error(fem_mesh,Du,u[end]),
-                  :l∞=> maximum(abs.(u[end]-u_analytic)), :l2=> norm(u[end]-u_analytic,2))
-    new(fem_mesh,u,true,u_analytic,errors,false,t,prob,true,0)
-  end
-  function FEMSolution(fem_mesh,u,u_analytic,Du,prob)
-    FEMSolution(fem_mesh::FEMmesh,u,u_analytic,Du,[],prob,save_timeseries=false)
-  end
-  function FEMSolution(fem_mesh::FEMmesh,u::AbstractArray,prob)
-    FEMSolution(fem_mesh,u,[],prob,save_timeseries=false)
-  end
-  function FEMSolution(fem_mesh::FEMmesh,u::AbstractArray,t,prob;save_timeseries=true)
-    new(fem_mesh,u,false,nothing,Dict{String,Float64}(),false,t,prob,save_timeseries,0)
-  end
+end
+
+function FEMSolution(u,u_analytic,Du,t,prob)
+  errors = Dict(:L2=>getL2error(prob.mesh,prob.analytic,u[end]),:H1=>getH1error(prob.mesh,Du,u[end]),
+                :l∞=> maximum(abs.(u[end]-u_analytic)), :l2=> norm(u[end]-u_analytic,2))
+  FEMSolution(u,u_analytic,errors,t,prob,0)
+end
+function FEMSolution(u,u_analytic,Du,prob)
+  FEMSolution(u,u_analytic,Du,[],prob)
+end
+function FEMSolution(u::AbstractArray,prob)
+  FEMSolution(u,[],prob)
+end
+function FEMSolution(u::AbstractArray,t,prob)
+  FEMSolution(u,nothing,Dict{Symbol,Float64}(),t,prob,0)
+end
+
+function FEMSolution(sol::AbstractFEMSolution,u_analytic,errors)
+  FEMSolution(sol.u,u_analytic,errors,sol.t,sol.prob,sol.tslocation)
 end
