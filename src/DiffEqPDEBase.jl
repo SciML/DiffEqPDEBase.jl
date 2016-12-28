@@ -27,7 +27,7 @@ include("fem_error.jl")
 include("mesh_tools/fem_boundary.jl")
 
 # Types
-export HeatProblem, PoissonProblem, FEMSolution, FEMMesh, SimpleMesh, FDMMesh
+export HeatProblem, PoissonProblem, FEMSolution, FEMMesh, SimpleFEMMesh, FDMMesh
 
 export AbstractPoissonProblem, AbstractHeatProblem, AbstractFEMSolution
 

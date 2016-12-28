@@ -45,7 +45,7 @@ end
 FEMMesh(node,elem,bdtype)=FEMMesh(node,elem,nothing,nothing,bdtype)
 
 """
-`SimpleMesh`
+`SimpleFEMMesh`
 
 Holds the information describing a finite element mesh. For information on how (node,elem)
 can be interpreted as a mesh describing a geometry, see [Programming of Finite
