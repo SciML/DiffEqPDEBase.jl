@@ -14,11 +14,8 @@ end
 
 function HeatProblem(analytic,Du,f,mesh;gN=nothing,σ=nothing,noisetype=:White,numvars=nothing,D=nothing)
   islinear = numparameters(f)==2
-  knownanalytic = true
-  u0(x) = analytic(0,x)
-  numvars = size(u0([0 0
-                     0 0
-                     0 0]),2)
+  u0 = analytic(0,mesh.node)
+  numvars = size(u0,2)
   gD = analytic
   if gN == nothing
     gN=(t,x)->zeros(size(x,1),numvars)
@@ -36,25 +33,6 @@ function HeatProblem(analytic,Du,f,mesh;gN=nothing,σ=nothing,noisetype=:White,n
       D = ones(1,numvars)
     end
   end
-
-  if numvars==0
-    u = copy(u0(mesh.node))
-    numvars = size(u,2)
-    if gD == nothing
-      gD=(t,x)->zeros(size(x,1),numvars)
-    end
-    if gN == nothing
-      gN=(t,x)->zeros(size(x,1),numvars)
-    end
-    if D == nothing
-      if numvars == 1
-        D = 1.0
-      else
-        D = ones(1,numvars)
-      end
-    end
-  end
-
   HeatProblem{islinear,isstochastic,typeof(mesh),typeof(f),typeof(Du),typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(analytic),typeof(D)}(u0,Du,f,gD,gN,analytic,numvars,σ,noisetype,D,mesh)
 end
 
@@ -67,10 +45,10 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
     isstochastic=true
   end
   islinear = numparameters(f)==2
-  knownanalytic = false
   if islinear
+    numvars = 1
     if u0==nothing
-      u0=(x)->zeros(size(x,1))
+      u0 = zeros(size(mesh.node,1),numvars)
     end
     if gD == nothing
       gD=(t,x)->zeros(size(x,1))
@@ -81,13 +59,12 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
     if D == nothing
       D = 1.0
     end
-    numvars = 1
   end
   if !islinear #nonlinear
     if u0==nothing && numvars == nothing
       warn("u0 and numvars must be given. numvars assumed 1.")
       numvars = 1
-      u0=(x)->zeros(size(x,1),numvars)
+      u0 = zeros(size(mesh.node,1),numvars)
       if gD == nothing
         gD=(t,x)->zeros(size(x,1),numvars)
       end
@@ -98,7 +75,7 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
         D = 1.0
       end
     elseif u0==nothing #numvars!=nothing
-      u0=(x)->zeros(size(x,1),numvars) #Default to zero
+      u0 = zeros(size(mesh.node,1),numvars) #Default to zero
       if gD == nothing
         gD=(t,x)->zeros(size(x,1),numvars)
       end
@@ -108,25 +85,20 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
       if D == nothing
         D = ones(1,numvars)
       end
-    elseif numvars==nothing #If u0 is given but numvars is not, we're still okay. Generate from size in function.
-      numvars=0 #Placeholder, update gD and gN in solver
-    end
-  end
-
-  if numvars==0
-    u = copy(u0(mesh.node))
-    numvars = size(u,2)
-    if gD == nothing
-      gD=(t,x)->zeros(size(x,1),numvars)
-    end
-    if gN == nothing
-      gN=(t,x)->zeros(size(x,1),numvars)
-    end
-    if D == nothing
-      if numvars == 1
-        D = 1.0
-      else
-        D = ones(1,numvars)
+    elseif numvars==nothing #If u0 is given but numvars is not, we're still okay.
+      numvars = size(u0,2)
+      if gD == nothing
+        gD=(t,x)->zeros(size(x,1),numvars)
+      end
+      if gN == nothing
+        gN=(t,x)->zeros(size(x,1),numvars)
+      end
+      if D == nothing
+        if numvars == 1
+          D = 1.0
+        else
+          D = ones(1,numvars)
+        end
       end
     end
   end
@@ -149,15 +121,13 @@ end
 
 function PoissonProblem(f,analytic,Du,mesh;gN=nothing,σ=nothing,u0=nothing,noisetype=:White,numvars=nothing,D=nothing)
   gD = analytic
-  numvars = size(analytic([0 0
-                      0 0
-                      0 0]),2)
+  numvars = size(analytic(mesh.node),2)
   islinear = numparameters(f)==1
   if gN == nothing
     gN=(x)->zeros(size(x,1),numvars)
   end
   if u0==nothing
-    u0=(x)->zeros(size(x,1),numvars)
+    u0 = zeros(size(mesh.node,1),numvars)
   end
   if D == nothing
     if numvars == 1
@@ -172,25 +142,6 @@ function PoissonProblem(f,analytic,Du,mesh;gN=nothing,σ=nothing,u0=nothing,nois
   else
     isstochastic=true
   end
-
-  u = u0(mesh.node)
-
-  if numvars==0
-    numvars = size(u,2)
-    if gD == nothing
-      gD=(x)->zeros(size(x,1),numvars)
-    end
-    if gN == nothing
-      gN=(x)->zeros(size(x,1),numvars)
-    end
-    if D == nothing
-      if numvars == 1
-        D = 1.0
-      else
-        D = ones(1,numvars)
-      end
-    end
-  end
   PoissonProblem{islinear,isstochastic,typeof(mesh),typeof(f),typeof(analytic),typeof(Du),typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(D)}(f,analytic,Du,analytic,gN,u0,numvars,σ,noisetype,D,mesh)
 end
 function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noisetype=:White,numvars=nothing,D=nothing)
@@ -202,7 +153,8 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
   end
   islinear = numparameters(f)==1
   if islinear && u0==nothing
-    u0=(x)->zeros(size(x,1))
+    numvars = 1
+    u0 = zeros(size(mesh.node,1),numvars)
     if gD == nothing
       gD=(x)->zeros(size(x,1))
     end
@@ -212,13 +164,12 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
     if D == nothing
       D = 1.0
     end
-    numvars = 1
   end
   if !islinear #nonlinear
     if u0==nothing && numvars == nothing
       warn("u0 and numvars must be given. numvars assumed 1.")
       numvars = 1
-      u0=(x)->zeros(size(x,1))
+      u0 = zeros(size(mesh.node,1),numvars)
       if gD == nothing
         gD=(x)->zeros(size(x,1))
       end
@@ -229,7 +180,7 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
         D = 1.0
       end
     elseif u0==nothing #numvars!=nothing
-      u0=(x)->zeros(size(x,1),numvars) #Default to zero
+      u0 = zeros(size(mesh.node,1),numvars) #Default to zero
       if gD == nothing
         gD=(x)->zeros(size(x,1),numvars)
       end
@@ -240,27 +191,23 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
         D = ones(1,numvars)
       end
     elseif numvars==nothing #If u0 is given but numvars is not, we're still okay. Generate from size in function.
-      numvars=0 #Placeholder, update gD and gN in solver
-    end
-  end
-
-  u = u0(mesh.node)
-
-  if numvars==0
-    numvars = size(u,2)
-    if gD == nothing
-      gD=(x)->zeros(size(x,1),numvars)
-    end
-    if gN == nothing
-      gN=(x)->zeros(size(x,1),numvars)
-    end
-    if D == nothing
-      if numvars == 1
-        D = 1.0
-      else
-        D = ones(1,numvars)
+      numvars = size(u0,2)
+      if gD == nothing
+        gD=(x)->zeros(size(x,1),numvars)
+      end
+      if gN == nothing
+        gN=(x)->zeros(size(x,1),numvars)
+      end
+      if D == nothing
+        if numvars == 1
+          D = 1.0
+        else
+          D = ones(1,numvars)
+        end
       end
     end
   end
+
+
   PoissonProblem{islinear,isstochastic,typeof(mesh),typeof(f),Void,Void,typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(D)}(f,nothing,nothing,gD,gN,u0,numvars,σ,noisetype,D,mesh)
 end
