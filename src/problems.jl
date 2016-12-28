@@ -1,4 +1,4 @@
-type HeatProblem{islinear,isstochastic,MeshType,F,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractHeatProblem
+type HeatProblem{islinear,isstochastic,MeshType,F,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractHeatProblem{islinear,isstochastic,MeshType}
   u0::F5
   Du::F2
   f::F
@@ -105,7 +105,7 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
   HeatProblem{islinear,isstochastic,typeof(mesh),typeof(f),Void,typeof(gD),typeof(gN),typeof(u0),typeof(σ),Void,typeof(D)}(u0,nothing,f,gD,gN,nothing,numvars,σ,noisetype,D,mesh)
 end
 
-type PoissonProblem{islinear,isstochastic,MeshType,F1,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractPoissonProblem
+type PoissonProblem{islinear,isstochastic,MeshType,F1,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractPoissonProblem{islinear,isstochastic,MeshType}
   f::F1
   analytic::F2
   Du::F3

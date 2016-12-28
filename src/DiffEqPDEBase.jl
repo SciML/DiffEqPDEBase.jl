@@ -7,8 +7,8 @@ using DiffEqBase
 using RecipesBase, VectorizedRoutines.Matlab, ChunkedArrays
 
 abstract PDEProblem <: DEProblem
-abstract AbstractPoissonProblem <: PDEProblem
-abstract AbstractHeatProblem <: PDEProblem
+abstract AbstractPoissonProblem{islinear,isstochastic,MeshType} <: PDEProblem
+abstract AbstractHeatProblem{islinear,isstochastic,MeshType} <: PDEProblem
 
 abstract AbstractFEMSolution <: DESolution
 
