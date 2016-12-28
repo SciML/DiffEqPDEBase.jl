@@ -1,35 +1,3 @@
-"""
-FEMmesh
-
-Holds the information describing a finite element mesh. For information on how (node,elem)
-can be interpreted as a mesh describing a geometry, see the mesh specification documentation.
-
-### Fields
-
-* `node`: The nodes in the (node,elem) structure.
-* `elem`: The elements in the (node,elem) structure.
-* `bdnode`: Vector of indices for the boundary nodes.
-* `freenode`: Vector of indices for the free (non-dirichlet bound) nodes.
-* `bdedge`: Indices of the edges in totaledge which are on the boundary.
-* `is_bdnode`: Boolean which is true for nodes on the boundary.
-* `is_bdelem`: Boolean which is true for elements on the boundary.
-* `bdflag`: Flag which describes the type of boundary condition. 1=> dirichlet, 2=>neumann, 3=>robin.
-* `totaledge`: Vector of the edges.
-* `area`: Vector which is the area for each element.
-* `dirichlet`: Indices for the nodes on the boundary which have a dirichlet boundary condition.
-* `neumann`: Indices for the nodes on the boundary which have a neumann boundary condition.
-* `robin`: Indices for the nodes on the boundary which have a robin boundary condition.
-* `N::Int`: The number of nodes.
-* `NT`::Int: The number of triangles (elements).
-* `dx`: The spatial discretization size. If non-uniform, this is the average.
-* `dt`: The time discretization size. If adaptive, this is the initial.
-* `T`::Number: The end time.
-* `numiters`::Int: The number of iterations to go from 0 to T using dt.
-* `μ`: The CFL μ stability parameter.
-* `ν`: The CFL ν stability parameter.
-* `evolutionEq`: True for a mesh which has non-trivial time components.
-
-"""
 type FEMmesh{T1,T2,tType,TType} <: Mesh
   node::T1
   elem::Array{Int,2}

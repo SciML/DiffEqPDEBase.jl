@@ -1,15 +1,12 @@
-type HeatProblem{MeshType,F,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractHeatProblem
+type HeatProblem{islinear,isstochastic,MeshType,F,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractHeatProblem
   u0::F5
   Du::F2
   f::F
   gD::F3
   gN::F4
   analytic::F7
-  knownanalytic::Bool
-  islinear::Bool
   numvars::Int
   σ::F6
-  stochastic::Bool
   noisetype::Symbol
   D::DiffType
   mesh::MeshType
@@ -27,10 +24,10 @@ function HeatProblem(analytic,Du,f,mesh;gN=nothing,σ=nothing,noisetype=:White,n
     gN=(t,x)->zeros(size(x,1),numvars)
   end
   if σ==nothing
-    stochastic=false
+    isstochastic=false
     σ=(t,x)->zeros(size(x,1),numvars)
   else
-    stochastic=true
+    isstochastic=true
   end
   if D == nothing
     if numvars == 1
@@ -58,16 +55,16 @@ function HeatProblem(analytic,Du,f,mesh;gN=nothing,σ=nothing,noisetype=:White,n
     end
   end
 
-  HeatProblem(u0,Du,f,gD,gN,analytic,knownanalytic,islinear,numvars,σ,stochastic,noisetype,D,mesh)
+  HeatProblem{islinear,isstochastic,typeof(mesh),typeof(f),typeof(Du),typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(analytic),typeof(D)}(u0,Du,f,gD,gN,analytic,numvars,σ,noisetype,D,mesh)
 end
 
 
 function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White,numvars=nothing,D=nothing)
   if σ==nothing
-    stochastic=false
+    isstochastic=false
     σ=(t,x)->zeros(size(x,1))
   else
-    stochastic=true
+    isstochastic=true
   end
   islinear = numparameters(f)==2
   knownanalytic = false
@@ -133,31 +130,20 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
       end
     end
   end
-
-  HeatProblem(u0,(x)->0,f,gD,gN,(x)->0,knownanalytic,islinear,numvars,σ,stochastic,noisetype,D,mesh)
+  HeatProblem{islinear,isstochastic,typeof(mesh),typeof(f),Void,typeof(gD),typeof(gN),typeof(u0),typeof(σ),Void,typeof(D)}(u0,nothing,f,gD,gN,nothing,numvars,σ,noisetype,D,mesh)
 end
 
-type PoissonProblem{MeshType} <: AbstractPoissonProblem
-  "f: Forcing function in the Poisson problem"
-  f#::Function
-  "analytic: Solution to the Poisson problem"
-  analytic::Function
-  "Du: Gradient of the solution to the Poisson problem"
-  Du::Function
-  "gD: dirichlet Boundary Data"
-  gD#::Nullable{Function}
-  "gN: neumann Boundary Data"
-  gN#::Nullable{Function}
-  "knownanalytic: Boolean which states whether the solution function is given"
-  knownanalytic::Bool
-  "islinear: Boolean which states whether the problem is linear or nonlinear"
-  islinear::Bool
-  u0::Function
+type PoissonProblem{islinear,isstochastic,MeshType,F1,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractPoissonProblem
+  f::F1
+  analytic::F2
+  Du::F3
+  gD::F4
+  gN::F5
+  u0::F6
   numvars::Int
-  σ::Function
-  stochastic::Bool
+  σ::F7
   noisetype::Symbol
-  D#::AbstractArray
+  D::DiffType
   mesh::MeshType
 end
 
@@ -181,10 +167,10 @@ function PoissonProblem(f,analytic,Du,mesh;gN=nothing,σ=nothing,u0=nothing,nois
     end
   end
   if σ==nothing
-    stochastic=false
+    isstochastic=false
     σ=(x)->zeros(size(x,1),numvars)
   else
-    stochastic=true
+    isstochastic=true
   end
 
   u = u0(mesh.node)
@@ -205,14 +191,14 @@ function PoissonProblem(f,analytic,Du,mesh;gN=nothing,σ=nothing,u0=nothing,nois
       end
     end
   end
-  PoissonProblem(f,analytic,Du,analytic,gN,true,islinear,u0,numvars,σ,stochastic,noisetype,D,mesh)
+  PoissonProblem{islinear,isstochastic,typeof(mesh),typeof(f),typeof(analytic),typeof(Du),typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(D)}(f,analytic,Du,analytic,gN,u0,numvars,σ,noisetype,D,mesh)
 end
 function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noisetype=:White,numvars=nothing,D=nothing)
   if σ==nothing
-    stochastic=false
+    isstochastic=false
     σ=(x)->zeros(size(x,1))
   else
-    stochastic = true
+    isstochastic = true
   end
   islinear = numparameters(f)==1
   if islinear && u0==nothing
@@ -276,5 +262,5 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
       end
     end
   end
-  PoissonProblem(f,(x)->0,(x)->0,gD,gN,false,islinear,u0,numvars,σ,stochastic,noisetype,D,mesh)
+  PoissonProblem{islinear,isstochastic,typeof(mesh),typeof(f),Void,Void,typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(D)}(f,nothing,nothing,gD,gN,u0,numvars,σ,noisetype,D,mesh)
 end
