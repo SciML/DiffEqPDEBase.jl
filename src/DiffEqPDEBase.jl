@@ -11,6 +11,10 @@ abstract AbstractHeatProblem <: DEProblem
 
 abstract AbstractFEMSolution <: DESolution
 
+"`Mesh`: An abstract type which holds a (node,elem) pair and other information for a mesh"
+abstract AbstractMesh
+abstract AbstractFEMMesh <: AbstractMesh
+
 import Base: size, length, start, next, done, eltype
 
 include("mesh_tools/meshes.jl")
@@ -23,7 +27,7 @@ include("fem_error.jl")
 include("mesh_tools/fem_boundary.jl")
 
 # Types
-export HeatProblem, PoissonProblem, FEMSolution, FEMmesh, SimpleMesh, FDMMesh
+export HeatProblem, PoissonProblem, FEMSolution, FEMMesh, SimpleMesh, FDMMesh
 
 export AbstractPoissonProblem, AbstractHeatProblem, AbstractFEMSolution
 

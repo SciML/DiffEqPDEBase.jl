@@ -1,7 +1,7 @@
 """
 `findboundary(elem,bdflag=[])``
 
-`findboundary(fem_mesh::FEMmesh,bdflag=[])`
+`findboundary(fem_mesh::FEMMesh,bdflag=[])`
 
 Finds elements which are on the boundary of the domain. If bdflag is given,
 then those indices are added as nodes for a dirichlet boundary condition (useful
@@ -45,12 +45,12 @@ function findboundary(elem::AbstractArray;bdflag=[])
   return(bdnode,bdedge,is_bdnode,is_bdelem)
 end
 
-findboundary(fem_mesh::Mesh,bdflag=[]) = findboundary(fem_mesh.elem,bdflag=bdflag)
+findboundary(fem_mesh::AbstractFEMMesh,bdflag=[]) = findboundary(fem_mesh.elem,bdflag=bdflag)
 
 """
 `setboundary(node::AbstractArray,elem::AbstractArray,bdtype)`
 
-`setboundary(fem_mesh::FEMmesh,bdtype)`
+`setboundary(fem_mesh::FEMMesh,bdtype)`
 
 Takes in the fem_mesh and creates an array bdflag which denotes the boundary types.
 1 stands for dirichlet, 2 for neumann, 3 for robin.
@@ -103,7 +103,7 @@ function setboundary(node::AbstractArray,elem::AbstractArray,bdtype)
   return(bdflag)
 end
 
-setboundary(fem_mesh::Mesh,bdtype) = setboundary(fem_mesh.node,fem_mesh.elem,bdtype)
+setboundary(fem_mesh::AbstractFEMMesh,bdtype) = setboundary(fem_mesh.node,fem_mesh.elem,bdtype)
 
 function findbdtype(bdstr)
     if bdstr==:dirichlet

@@ -21,7 +21,7 @@
 end
 
 
-@recipe function f(mesh::Mesh)
+@recipe function f(mesh::AbstractFEMMesh)
   seriestype --> :surface #:plot_trisurf
   #triangles  --> mesh.elem-1
   mesh.node[:,1], mesh.node[:,2], ones(mesh.node[:,1])

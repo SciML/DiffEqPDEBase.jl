@@ -1,4 +1,4 @@
-type FEMmesh{T1,T2,tType,TType} <: Mesh
+type FEMMesh{T1,T2,tType,tspanType} <: AbstractFEMMesh
   node::T1
   elem::Array{Int,2}
   bdnode::Vector{Int}
@@ -15,12 +15,10 @@ type FEMmesh{T1,T2,tType,TType} <: Mesh
   N::Int
   NT::Int
   dt::tType
-  T::TType
-  numiters::Int
-  evolutionEq::Bool
+  tspan::tspanType
 end
 
-function FEMmesh(node,elem,dt,T,bdtype)
+function FEMMesh(node,elem,dt,tspan,bdtype)
   N = size(node,1); NT = size(elem,1);
   totaledge = [elem[:,[2,3]]; elem[:,[3,1]]; elem[:,[1,2]]]
 
@@ -42,14 +40,9 @@ function FEMmesh(node,elem,dt,T,bdtype)
   is_bdnode[dirichlet] = true
   bdnode = find(is_bdnode)
   freenode = find(!is_bdnode)
-  if dt != 0
-    numiters = round(Int64,T/dt)
-  else
-    numiters = 0
-  end
-  FEMmesh(node,elem,bdnode,freenode,bdedge,is_bdnode,is_bdelem,bdflag,totaledge,area,dirichlet,neumann,robin,N,NT,dt,T,numiters,T!=0)
+  FEMMesh(node,elem,bdnode,freenode,bdedge,is_bdnode,is_bdelem,bdflag,totaledge,area,dirichlet,neumann,robin,N,NT,dt,tspan)
 end
-FEMmesh(node,elem,bdtype)=FEMmesh(node,elem,0,0,bdtype)
+FEMMesh(node,elem,bdtype)=FEMMesh(node,elem,nothing,nothing,bdtype)
 
 """
 `SimpleMesh`
@@ -63,7 +56,7 @@ Element Methods by Long Chen](http://www.math.uci.edu/~chenlong/226/Ch3FEMCode.p
 * `node`: The nodes in the (node,elem) structure.
 * `elem`: The elements in the (node,elem) structure.
 """
-type SimpleMesh{T} <: Mesh
+type SimpleFEMMesh{T} <: AbstractFEMMesh
   node::T
   elem::Array{Int,2}
 end
@@ -120,7 +113,7 @@ notime_squaremesh(square,dx,"dirichlet")
 """
 function notime_squaremesh(square,dx,bdtype)
   node,elem = fem_squaremesh(square,dx)
-  return(FEMmesh(node,elem,bdtype))
+  return(FEMMesh(node,elem,bdtype))
 end
 
 """
@@ -139,7 +132,7 @@ parabolic_squaremesh(square,dx,dt,T,:dirichlet)
 ```
 
 """
-function parabolic_squaremesh(square,dx,dt,T,bdtype)
+function parabolic_squaremesh(square,dx,dt,tspan,bdtype)
   node,elem = fem_squaremesh(square,dx)
-  return(FEMmesh(node,elem,dt,T,bdtype))
+  return(FEMMesh(node,elem,dt,tspan,bdtype))
 end
