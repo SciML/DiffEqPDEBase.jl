@@ -3,3 +3,4 @@ RecipesBase
 VectorizedRoutines
 ChunkedArrays
 DiffEqBase 0.4.1
+Compat 0.18.0

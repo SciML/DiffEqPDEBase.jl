@@ -6,23 +6,25 @@ using DiffEqBase
 
 using RecipesBase, VectorizedRoutines.Matlab, ChunkedArrays
 
-abstract PDEProblem <: DEProblem
-abstract AbstractPoissonProblem{islinear,isstochastic,MeshType} <: PDEProblem
-abstract AbstractHeatProblem{islinear,isstochastic,MeshType} <: PDEProblem
+using Compat
 
-abstract AbstractFEMSolution <: DESolution
+@compat abstract type PDEProblem <: DEProblem end
+@compat abstract type AbstractPoissonProblem{islinear,isstochastic,MeshType} <: PDEProblem end
+@compat abstract type AbstractHeatProblem{islinear,isstochastic,MeshType} <: PDEProblem end
 
-"`Mesh`: An abstract type which holds a (node,elem) pair and other information for a mesh"
-abstract AbstractMesh
-abstract AbstractFEMMesh <: AbstractMesh
+@compat abstract type AbstractFEMSolution <: DESolution end
 
-abstract PDEAlgorithm <: DEAlgorithm
-abstract AbstractFEMAlgorithm <: PDEAlgorithm
-abstract AbstractFDMAlgorithm <: PDEAlgorithm
+"`Mesh`: An @compat abstract type type which holds a (node,elem) pair and other information for a mesh"
+@compat abstract type AbstractMesh end
+@compat abstract type AbstractFEMMesh <: AbstractMesh end
+
+@compat abstract type PDEAlgorithm <: DEAlgorithm end
+@compat abstract type AbstractFEMAlgorithm <: PDEAlgorithm end
+@compat abstract type AbstractFDMAlgorithm <: PDEAlgorithm end
 
 # Specific Problem Algorithms
-abstract AbstractHeatFEMAlgorithm <: AbstractFEMAlgorithm
-abstract AbstractPoissonFEMAlgorithm <: AbstractFEMAlgorithm
+@compat abstract type AbstractHeatFEMAlgorithm <: AbstractFEMAlgorithm end
+@compat abstract type AbstractPoissonFEMAlgorithm <: AbstractFEMAlgorithm end
 
 import Base: size, length, start, next, done, eltype
 
