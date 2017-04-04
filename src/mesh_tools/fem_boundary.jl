@@ -68,7 +68,7 @@ function setboundary(node::AbstractArray,elem::AbstractArray,bdtype)
   NT = size(elem,1)
   edge = unique(totaledge,1)
   totaledge = sort(totaledge,2)
-  edge_matrix = sparse(round.(Int,totaledge[:,1]),round.(Int,totaledge[:,2]),1)
+  edge_matrix = sparse(round(Int,totaledge[:,1]),round(Int,totaledge[:,2]),1)
   i,j = ind2sub(size(edge_matrix),find(x->x==1,edge_matrix))
   bdedge = [i';j']'
   bdedgeidx = zeros(Int64,size(bdedge,1))
