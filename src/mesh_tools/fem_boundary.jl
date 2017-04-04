@@ -19,7 +19,7 @@ for creating cracks and other cutouts of domains).
 """
 function findboundary(elem::AbstractArray;bdflag=[])
   N = round(Int,maximum(elem))
-  elem = round(Int,elem)
+  elem = round.(Int,elem)
   nv = size(elem,2)
   if nv == 3 # triangle
       totaledge = [elem[:,[2,3]]; elem[:,[3,1]]; elem[:,[1,2]]]
@@ -41,7 +41,7 @@ function findboundary(elem::AbstractArray;bdflag=[])
       is_bdnode[vec(bdedge)] = true
       bdnode = find(is_bdnode)
   end
-  is_bdelem = is_bdnode[elem[:,1]] | is_bdnode[elem[:,2]] | is_bdnode[elem[:,3]]
+  is_bdelem = is_bdnode[elem[:,1]] .| is_bdnode[elem[:,2]] .| is_bdnode[elem[:,3]]
   return(bdnode,bdedge,is_bdnode,is_bdelem)
 end
 
@@ -68,7 +68,7 @@ function setboundary(node::AbstractArray,elem::AbstractArray,bdtype)
   NT = size(elem,1)
   edge = unique(totaledge,1)
   totaledge = sort(totaledge,2)
-  edge_matrix = sparse(round(Int,totaledge[:,1]),round(Int,totaledge[:,2]),1)
+  edge_matrix = sparse(round.(Int,totaledge[:,1]),round.(Int,totaledge[:,2]),1)
   i,j = ind2sub(size(edge_matrix),find(x->x==1,edge_matrix))
   bdedge = [i';j']'
   bdedgeidx = zeros(Int64,size(bdedge,1))
