@@ -39,7 +39,7 @@ function FEMMesh(node,elem,dt,tspan,bdtype)
   is_bdnode = falses(N)
   is_bdnode[dirichlet] = true
   bdnode = find(is_bdnode)
-  freenode = find(.!(is_bdnode))
+  freenode = @compat find(.!(is_bdnode))
   FEMMesh(node,elem,bdnode,freenode,bdedge,is_bdnode,is_bdelem,bdflag,totaledge,area,dirichlet,neumann,robin,N,NT,dt,tspan)
 end
 FEMMesh(node,elem,bdtype)=FEMMesh(node,elem,nothing,nothing,bdtype)
