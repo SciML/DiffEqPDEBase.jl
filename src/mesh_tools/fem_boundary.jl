@@ -19,7 +19,7 @@ for creating cracks and other cutouts of domains).
 """
 function findboundary(elem::AbstractArray;bdflag=[])
   N = round(Int,maximum(elem))
-  elem = @compat round.(Int,elem)
+  elem = round(Int,elem)
   nv = size(elem,2)
   if nv == 3 # triangle
       totaledge = [elem[:,[2,3]]; elem[:,[3,1]]; elem[:,[1,2]]]
