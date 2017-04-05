@@ -42,7 +42,7 @@ function findboundary(elem::AbstractArray;bdflag=[])
       bdnode = find(is_bdnode)
   end
   is_bdelem = is_bdnode[elem[:,1]] .| is_bdnode[elem[:,2]] .| is_bdnode[elem[:,3]]
-  if VERSION < v"0.6-"
+  if VERSION < v"0.6.0-dev.1632" # Julia PR #17623 changed the result of broadcast(|, ...) from Array{Bool} to BitArray
     is_bdelem = convert(BitArray,is_bdelem)
   end
   return(bdnode,bdedge,is_bdnode,is_bdelem)
