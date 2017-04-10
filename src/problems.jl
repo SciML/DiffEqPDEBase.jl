@@ -13,7 +13,7 @@ type HeatProblem{islinear,isstochastic,MeshType,F,F2,F3,F4,F5,F6,F7,DiffType} <:
 end
 
 function HeatProblem(analytic,Du,f,mesh;gN=nothing,σ=nothing,noisetype=:White,numvars=nothing,D=nothing)
-  islinear = numparameters(f)==2
+  islinear = numargs(f)==2
   u0 = analytic(0,mesh.node)
   numvars = size(u0,2)
   gD = analytic
@@ -44,7 +44,7 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
   else
     isstochastic=true
   end
-  islinear = numparameters(f)==2
+  islinear = numargs(f)==2
   if islinear
     numvars = 1
     if u0==nothing
@@ -122,7 +122,7 @@ end
 function PoissonProblem(f,analytic,Du,mesh;gN=nothing,σ=nothing,u0=nothing,noisetype=:White,numvars=nothing,D=nothing)
   gD = analytic
   numvars = size(analytic(mesh.node),2)
-  islinear = numparameters(f)==1
+  islinear = numargs(f)==1
   if gN == nothing
     gN=(x)->zeros(size(x,1),numvars)
   end
@@ -151,7 +151,7 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
   else
     isstochastic = true
   end
-  islinear = numparameters(f)==1
+  islinear = numargs(f)==1
   if islinear && u0==nothing
     numvars = 1
     u0 = zeros(size(mesh.node,1),numvars)
