@@ -12,9 +12,8 @@ using Compat
 @compat abstract type AbstractPoissonProblem{islinear,isstochastic,MeshType} <: PDEProblem end
 @compat abstract type AbstractHeatProblem{islinear,isstochastic,MeshType} <: PDEProblem end
 
-@compat abstract type AbstractFEMSolution <: DESolution end
+@compat abstract type AbstractFEMSolution{T,N} <: AbstractTimeseriesSolution{T,N} end
 
-"`Mesh`: An @compat abstract type type which holds a (node,elem) pair and other information for a mesh"
 @compat abstract type AbstractMesh end
 @compat abstract type AbstractFEMMesh <: AbstractMesh end
 
