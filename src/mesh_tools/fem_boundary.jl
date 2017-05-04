@@ -18,7 +18,7 @@ for creating cracks and other cutouts of domains).
 
 """
 function findboundary(elem::AbstractArray;bdflag=[])
-  if VERSION < v"0.621936384b5d896aae4459e6859cbb8a1701dcd5f"
+  if VERSION < v"0.6.0-dev.693"
     N = round(Int,maximum(elem))
     elem = round(Int,elem)
   else
@@ -76,7 +76,7 @@ function setboundary(node::AbstractArray,elem::AbstractArray,bdtype)
   NT = size(elem,1)
   edge = unique(totaledge,1)
   totaledge = sort(totaledge,2)
-  if VERSION < v"0.621936384b5d896aae4459e6859cbb8a1701dcd5f"
+  if VERSION < v"0.6.0-dev.693"
     edge_matrix = sparse(round(Int,totaledge[:,1]),round(Int,totaledge[:,2]),1)
   else
     edge_matrix = sparse(round.(Int,totaledge[:,1]),round.(Int,totaledge[:,2]),1)
