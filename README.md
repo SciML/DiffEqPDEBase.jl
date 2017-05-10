@@ -5,6 +5,9 @@
 [![Coverage Status](https://coveralls.io/repos/JuliaDiffEq/DiffEqPDEBase.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/JuliaDiffEq/DiffEqPDEBase.jl?branch=master)
 [![codecov.io](http://codecov.io/github/JuliaDiffEq/DiffEqPDEBase.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaDiffEq/DiffEqPDEBase.jl?branch=master)
 
+[![DiffEqPDEBase](http://pkg.julialang.org/badges/DiffEqPDEBase_0.5.svg)](http://pkg.julialang.org/?pkg=DiffEqPDEBase)
+[![DiffEqPDEBase](http://pkg.julialang.org/badges/DiffEqPDEBase_0.6.svg)](http://pkg.julialang.org/?pkg=DiffEqPDEBase)
+
 DiffEqPDEBase.jl is a component package in the DiffEq ecosystem. It holds the
 common types and utility functions which are shared by other component packages
 which are related to solving PDEs in order to reduce the size of dependencies.
