@@ -2,7 +2,7 @@
   if sol.tslocation==0 #Plot solution at end
     out = Any[]
     for i = 1:size(sol[end],2)
-      push!(out,sol[end,:,i])
+      push!(out,sol.u[end][:,i])
     end
     if plot_analytic
       for i = 1:size(sol.u,2)
@@ -12,7 +12,7 @@
   else #use timeseries
     out = Any[]
     for i = 1:sol.prob.numvars
-      push!(out,sol[sol.tslocation,:,i])
+      push!(out,sol.u[sol.tslocation][:,i])
     end
   end
   seriestype --> :surface
