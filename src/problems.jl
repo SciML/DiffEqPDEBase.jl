@@ -105,6 +105,14 @@ function HeatProblem(u0,f,mesh;gD=nothing,gN=nothing,σ=nothing,noisetype=:White
   HeatProblem{islinear,isstochastic,typeof(mesh),typeof(f),Void,typeof(gD),typeof(gN),typeof(u0),typeof(σ),Void,typeof(D)}(u0,nothing,f,gD,gN,nothing,numvars,σ,noisetype,D,mesh)
 end
 
+Base.summary(prob::HeatProblem) = string(DiffEqBase.parameterless_type(prob))
+function Base.show(io::IO, A::HeatProblem)
+  println(io,summary(A))
+end
+function Base.display(io::IO, A::HeatProblem)
+  println(io,summary(A))
+end
+
 type PoissonProblem{islinear,isstochastic,MeshType,F1,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractPoissonProblem{islinear,isstochastic,MeshType}
   f::F1
   analytic::F2
@@ -210,4 +218,12 @@ function PoissonProblem(f,mesh;gD=nothing,gN=nothing,u0=nothing,σ=nothing,noise
 
 
   PoissonProblem{islinear,isstochastic,typeof(mesh),typeof(f),Void,Void,typeof(gD),typeof(gN),typeof(u0),typeof(σ),typeof(D)}(f,nothing,nothing,gD,gN,u0,numvars,σ,noisetype,D,mesh)
+end
+
+Base.summary(prob::PoissonProblem) = string(DiffEqBase.parameterless_type(prob))
+function Base.show(io::IO, A::PoissonProblem)
+  println(io,summary(A))
+end
+function Base.display(io::IO, A::PoissonProblem)
+  println(io,summary(A))
 end
