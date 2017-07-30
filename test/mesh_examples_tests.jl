@@ -1,22 +1,24 @@
 ###Example Meshes
 
-using JLD
+using JLD, DiffEqProblemLibrary
 
-mesh = meshExample_bunny()
+pkgdir = Pkg.dir("DiffEqProblemLibrary")
+meshes_location = "premade_meshes.jld"
 
-mesh = meshExample_flowpastcylindermesh()
+mesh = load("$pkgdir/$meshes_location","bunny")
 
-mesh = meshExample_lakemesh()
+mesh = load("$pkgdir/$meshes_location","flowpastcylindermesh")
 
-mesh = meshExample_Lshapemesh()
+mesh = load("$pkgdir/$meshes_location","lakemesh")
 
-mesh = meshExample_Lshapeunstructure()
+mesh = load("$pkgdir/$meshes_location","Lshapemesh")
+mesh = load("$pkgdir/$meshes_location","Lshapeunstructure")
 
-mesh = meshExample_oilpump()
+mesh = load("$pkgdir/$meshes_location","oilpump")
 
-mesh = meshExample_wavymesh()
+mesh = load("$pkgdir/$meshes_location","wavymesh")
 
-mesh = meshExample_wavyperturbmesh()
+mesh = load("$pkgdir/$meshes_location","wavyperturbmesh")
 
 TEST_PLOT && plot(mesh)
 
