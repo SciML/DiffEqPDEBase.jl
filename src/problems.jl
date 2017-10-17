@@ -107,7 +107,7 @@ end
 
 Base.summary(prob::HeatProblem) = string(DiffEqBase.parameterless_type(prob))
 function Base.show(io::IO, A::HeatProblem)
-  println(io,summary(A))
+  print(io,summary(A))
 end
 
 type PoissonProblem{islinear,isstochastic,MeshType,F1,F2,F3,F4,F5,F6,F7,DiffType} <: AbstractPoissonProblem{islinear,isstochastic,MeshType}
@@ -219,5 +219,5 @@ end
 
 Base.summary(prob::PoissonProblem) = string(DiffEqBase.parameterless_type(prob))
 function Base.show(io::IO, A::PoissonProblem)
-  println(io,summary(A))
+  print(io,summary(A))
 end
