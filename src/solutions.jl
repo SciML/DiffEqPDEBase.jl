@@ -32,3 +32,17 @@ function FEMSolution(sol::AbstractFEMSolution,u_analytic,errors)
   N = length((size(sol.u)..., length(sol.u)))
   FEMSolution{T,N,typeof(sol.u),typeof(u_analytic),typeof(errors),typeof(sol.t),typeof(sol.prob)}(sol.u,u_analytic,errors,sol.t,sol.prob,sol.tslocation)
 end
+function Base.show(io::IO, A::AbstractFEMSolution)
+  print(io,"t: ")
+  show(io, A.t)
+  println(io)
+  print(io,"u: ")
+  show(io, A.u)
+end
+function Base.show(io::IO, m::MIME"text/plain", A::AbstractFEMSolution)
+  print(io,"t: ")
+  show(io, A.t)
+  println(io)
+  print(io,"u: ")
+  show(io, A.u)
+end
